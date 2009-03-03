@@ -1,0 +1,36 @@
+import(cluster)
+
+export(
+		# main two functions
+		"hierarch", "leaders",
+       	# data
+#      	"patents",
+       	# compute order for plotting dendrogram
+       	"compute.plot.order"
+       )
+
+# export also internal functions
+
+#export(
+#		# for hierarch
+#		"hclustering",
+#		"compute.hleader", "compute.D",
+#		"harmonic.sum", "diss.matrix",
+#		"update.diss", "update.leader", "update.matrix", "update.vector",
+#		# error functions - dissimilarities
+#		"d1.D", "d3.D", "d4.D", "d5.D", "d6.D", "d7.D",
+#		# - new leader
+#		"d1.hleader", "d3.hleader", "d4.hleader", "d5.hleader",
+#		"d6.hleader","d7.hleader",
+#		#
+#		#for leaders
+#		"leaders.algorithm",
+#		"compute.leaders", "compute.clusters",
+#		"sort.matrix.rows",
+#		#error functions - basic
+#		"d1, "d2", "d3", "d4", "d5", "d6", "d7",
+#		# - new leader from units
+#		"d1.cleader", "d2.cleader", "d3.cleader", "d4.cleader", "d5.cleader",
+#		"d6.cleader","d7.cleader"
+#		)
+		
