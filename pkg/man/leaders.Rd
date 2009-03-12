@@ -5,7 +5,7 @@
 Compute clustering with adapted leaders method, adapted stands for different error functions that are computed between units and current leaders
 }
 \usage{
-leaders(x, centers, err.measure = "d4", as.probs = FALSE, iter.max = 10, stabil = 1e-06, penalty = 1e+06)
+leaders(x, centers, err.measure = "d4", as.probs = FALSE, iter.max = 10, stabil = 1e-06, penalty = 1e+06, echo = FALSE)
 }
 \arguments{
   \item{x}{Dataframe or matrix of units (in rows). Rows can represent probabilities or frequencies.}
@@ -15,6 +15,8 @@ leaders(x, centers, err.measure = "d4", as.probs = FALSE, iter.max = 10, stabil 
   \item{iter.max}{Maximal number of iterations of the algorithm (because leaders algorithm does local optimization). If centers represents a matrix, the argument is ignored.}
   \item{stabil}{Stability parameter - used in order to achieve convergence if too many clustering iterations.}
   \item{penalty}{Parameter to specify how should division with zero be treated.}
+  \item{echo}{if TRUE function prints error of each iteration}
+
 }
 \details{
 Function iterates two steps of computation: (1) computation of the new leaders of clusters (according to error function) and (2) recomputation of new clusters (for each unit decide the cluster according to error function).  The iteration is stopped when clustering of the last two steps is the same or when stability parameter is larger than the difference between clustering errors of the last two steps (iterations).

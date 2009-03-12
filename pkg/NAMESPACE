@@ -6,7 +6,9 @@ export(
        	# data
 #      	"patents",
        	# compute order for plotting dendrogram
-       	"compute.plot.order"
+       	"compute.plot.order",
+       	# allowing to start hier. clu. from leaders
+       	"from.Leaders"
        )
 
 # export also internal functions

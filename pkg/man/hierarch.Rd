@@ -5,7 +5,7 @@
 Compute clustering with adapted hierarchical clustering method, adapted stands for different error functions that are computed between units and current leaders
 }
 \usage{
-hierarch(x, as.probs = TRUE, err.measure = "d4", penalty = 1e+06, nleaders = NULL)
+hierarch(x, as.probs = TRUE, err.measure = "d4", penalty = 1e+06, nleaders = NULL, fromLeaders = NULL)
 }
 \arguments{
   \item{x}{Dataframe or matrix of units (in rows). Rows can represent probabilities or frequencies.}
@@ -13,6 +13,8 @@ hierarch(x, as.probs = TRUE, err.measure = "d4", penalty = 1e+06, nleaders = NUL
   \item{err.measure}{String for error function that will be used to calculate the error between current leader and a unit. Possibilities are from d1 to d7 (see reference).}
   \item{penalty}{Parameter to specify how should division with zero be treated.}
   \item{nleaders}{How many leaders should be saved (\code{NULL} or between 1 and n (number of units)). Note: leaders cannot be always computed after the whole procedure.}
+  \item{fromLeaders}{NULL or list that one gets from function \code{from.Leaders} in order to take size and units from leaders method into consideration.}
+
 }
 \details{
 Function generates dissimilarity matrix (according to error function) and then in each step agglomerates the nearest two units, later clusters.  This stops when all units are in the same cluster.  Every step dissimilarity matrix is recomputed according to error functions (see reference for details).

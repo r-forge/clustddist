@@ -1,13 +1,14 @@
 # setwd("Users/natasa/projekti/R_package/paket/")
 #source("leaders.R")
 
-hierarch <- function (x, as.probs = TRUE, err.measure = "d4", penalty=1e6, nleaders=NULL){
+hierarch <- function(x, as.probs = TRUE, err.measure = "d4", penalty=1e6, nleaders=NULL, fromLeaders=NULL){
 	#
 	# basic function, compute hierarchical clustering
 	# data: x (units with variable values), 
 	# error measure:err.measure
 	# penalty: number that substitutes x/0
 	# nleaders: number of leaders, that should be returned
+	# fromLeaders: object that one gets when combining leaders and hierarch methods
 	# 
     x <- data.matrix(x)
     if (any(is.na(x)))
@@ -21,7 +22,7 @@ hierarch <- function (x, as.probs = TRUE, err.measure = "d4", penalty=1e6, nlead
     if ((!is.null(nleaders)) && ((nleaders<1) || (nleaders>n)))
     	stop("nleaders should be NULL or in [1,n].")
     # compute clustering
-	clu <- hclustering(x2,err.measure,penalty,nleaders)
+	clu <- hclustering(x2,err.measure,penalty,nleaders,fromLeaders)
 	# compute order (to be able to plot dendrogram)
 	order <- compute.plot.order(clu$merge,dim(clu$merge)[1])
     res <- list(merge=clu$merge,height=clu$height,order=order,
@@ -31,7 +32,7 @@ hierarch <- function (x, as.probs = TRUE, err.measure = "d4", penalty=1e6, nlead
 }
 
 
-hclustering <- function(x,err.measure,penalty=1e6,nleaders){
+hclustering <- function(x,err.measure,penalty=1e6,nleaders,fromLeaders){
 	n <- dim(x)[1]
 	merge <- matrix(nrow=n-1,ncol=2)
 	# temporary vector to save current cluster number - in which row it is written
@@ -39,9 +40,18 @@ hclustering <- function(x,err.measure,penalty=1e6,nleaders){
 	cluster_number <- seq(-1,-(n),-1)
 	height <- vector(mode="numeric",length=n-1)
 	leader <- as.matrix(x)
-	sum <- as.matrix(x)
-	harmonic <- harmonic.sum(x,penalty)
-	size <- rep(1,n)
+	if (is.null(fromLeaders)){
+		# start clustering from one unit
+		sum <- as.matrix(x)
+		harmonic <- harmonic.sum(x,penalty)
+		size <- rep(1,n)
+	}
+	else{
+		# start clustering from clustering leaders from "leaders" method
+		sum <- fromLeaders$sum
+		harmonic <- fromLeaders$harmonic
+		size <- fromLeaders$size	
+	}
 	# compute dissimilarity matrix
 	diss <- diss.matrix(leader,err.measure,size,sum,harmonic,penalty)
 	# (get lower triangle of dissimilarities)
@@ -63,7 +73,7 @@ hclustering <- function(x,err.measure,penalty=1e6,nleaders){
 		# END UPDATE MERGE
 		#	leader (compute new, add it on the first free place)
 		leader <- update.leader(mini,maxi,leader,err.measure,size,sum,harmonic,penalty)
-		if ((!is.null(nleaders)) && nleaders == i)
+		if ((!is.null(nleaders)) && nleaders == (n-i))
 			saved_leaders <- leader
 		# update size,sum,harmonic --- does not depend on err.measure
 		sum <- update.matrix(mini,maxi,sum)
@@ -191,7 +201,7 @@ compute.hleader <- function(i,j,leader,err.measure,size,sum,harmonic,penalty,...
 	if (err.measure == "d6")
 		temp_leader <- d6.hleader(size[i],size[j],harmonic[i,],harmonic[j,])
 	if (err.measure == "d7")
-		temp_leader <- d7.hleader(leader[i,],leader[j,],sum[i,],sum[j,])
+		temp_leader <- d7.hleader(leader[i,],leader[j,],sum[i,],sum[j,],penalty)
 	return(temp_leader)
 }
 
@@ -262,12 +272,18 @@ d6.hleader <- function(size1,size2,harmonic1,harmonic2,...){
 	return(leader)
 }
 
-d7.hleader <- function(leader1,leader2,sum1,sum2,...){
+# penalty
+d7.hleader <- function(leader1,leader2,sum1,sum2,penalty=1e6,...){
 	if (sum(sum1+sum2) == 0){
 		leader <- rep(0,length(leader1))
 	}else{
-		leader <- sqrt((sum1+sum2)/(sum1/(leader1)^2+sum2/(leader2)^2))
-		leader[which(is.nan(leader))] <- 0
+		# DODATI
+                temp1 <- sum1/(leader1)^2
+                temp1[which(is.infinite(temp1))] <- penalty
+                temp2 <- sum2/(leader2)^2
+                temp2[which(is.infinite(temp2))] <- penalty
+		leader <- sqrt((sum1+sum2)/(temp1+temp2))
+                leader[which(is.nan(leader))] <- 0
 	}
 	return(leader)
 }

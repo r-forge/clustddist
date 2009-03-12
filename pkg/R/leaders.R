@@ -1,13 +1,14 @@
 # setwd("Users/natasa/projekti/R_package/paket/")
 
 leaders <- function (x, centers, err.measure = "d4", as.probs = FALSE,
-					iter.max = 10, stabil=1e-6, penalty=1e6){
+					iter.max = 10, stabil=1e-6, penalty=1e6,echo=FALSE){
 	#
 	# basic function, compute clusters
 	# data: x, number of clusters (or centers already): centers, error measure: err.measure
 	# if x is probabilities: as.probs, 
 	# number of iterations for method: iter.max
 	# (only considered if centers means "number of centers)
+        # echo: whether iterations are written
 	#
     x <- data.matrix(x)
     if (any(is.na(x)))
@@ -55,7 +56,7 @@ leaders <- function (x, centers, err.measure = "d4", as.probs = FALSE,
 		}
         # compute clustering
         curr_res <- leaders.algorithm(x2, centers, err.measure=err.measure,
-        		stabil=stabil,penalty=penalty)
+        		stabil=stabil,penalty=penalty,echo=echo)
         if (is.null(res) || res$error > curr_res$error)
         	res <- curr_res
 	}
@@ -66,7 +67,7 @@ leaders <- function (x, centers, err.measure = "d4", as.probs = FALSE,
 }
 
 leaders.algorithm <- function(x, centers, err.measure="d4",stabil=1e-6,
-					penalty=1e6){
+					penalty=1e6,echo=FALSE){
 	#
 	# algorithm to get k=dim(centers)[1] clusters
 	# error measure between unit and center (leader): err.measure
@@ -84,7 +85,7 @@ leaders.algorithm <- function(x, centers, err.measure="d4",stabil=1e-6,
 	stabilize = FALSE
 	while (!stabilize){
 		# compute new leaders
-		leaders <- compute.leaders(x,k,curr_result$clu_vector,err.measure)
+		leaders <- compute.leaders(x,k,curr_result$clu_vector,err.measure,penalty)
 		leaders <- sort.matrix.rows(leaders)
 		# compute clustering function and check if leaders stabilized
 		if (max(centers - leaders) < stabil)
@@ -94,8 +95,10 @@ leaders.algorithm <- function(x, centers, err.measure="d4",stabil=1e-6,
 			curr_result <- compute.clusters(x,leaders,err.measure,penalty)
 			centers <- leaders
 			iter <- iter+1
-			print(iter)
-			print(curr_result$error)
+                        if (echo) {
+                          print(iter)
+                          print(curr_result$error)
+                        }
 		}
 	}
 	return(list(clu_vector=curr_result$clu_vector,error=curr_result$error,leaders=leaders))
@@ -120,7 +123,7 @@ compute.clusters <- function(x, centers, err.measure, penalty=1e6){
 	return(list(clu_vector=clu_vector,error=error))
 }
 
-compute.leaders <- function(x, k, curr_clusters,err.measure){
+compute.leaders <- function(x, k, curr_clusters,err.measure,penalty=1e6){
 	#
 	# data: x, number of clusters: k, curr_clusters: units with current clusters
 	# calls "error.measure.leader" function for each cluster
@@ -130,7 +133,7 @@ compute.leaders <- function(x, k, curr_clusters,err.measure){
 		cluster_units <- x[which(curr_clusters == i),]
 		if (!is.matrix(cluster_units))	# only one row
 			cluster_units <- t(as.matrix(cluster_units))
-		leaders[i,] <- eval(call(paste(err.measure,"cleader",sep="."),cluster_units))
+		leaders[i,] <- eval(call(paste(err.measure,"cleader",sep="."),cluster_units,penalty))
 	}
 	return(leaders)	
 }
@@ -161,7 +164,7 @@ d1 <- function(unit, centers,penalty=1e6){
 	return(list(error=error,clu=clu))
 }
 
-d1.cleader <- function(cluster_units){
+d1.cleader <- function(cluster_units,...){
 	#
 	# compute new leader for a cluster of units
 	# return leader
@@ -185,7 +188,7 @@ d2 <- function(unit, centers,penalty=1e6){
 	return(list(error=error,clu=clu))
 }
 
-d2.cleader <- function(cluster_units){
+d2.cleader <- function(cluster_units,...){
 	#
 	# compute new leader for a cluster of units
 	# return leader
@@ -214,7 +217,7 @@ d3 <- function(unit, centers,penalty=1e6){
 	return(list(error=error,clu=clu))
 }
 
-d3.cleader <- function(cluster_units){
+d3.cleader <- function(cluster_units,...){
 	#
 	# compute new leader for a cluster of units
 	# return leader
@@ -244,7 +247,7 @@ d4 <- function(unit, centers,penalty=1e6){
 	return(list(error=error,clu=clu))
 }
 
-d4.cleader <- function(cluster_units){
+d4.cleader <- function(cluster_units,...){
 	#
 	# compute new leader for a cluster of units
 	# return leader
@@ -273,12 +276,12 @@ d5 <- function(unit, centers,penalty=1e6){
 	return(list(error=error,clu=clu))
 }
 
-d5.cleader <- function(cluster_units){
+d5.cleader <- function(cluster_units,penalty=1e6){
 	#
 	# compute new leader for a cluster of units
 	# return leader
 	#
-	penalty <- 1e6
+	#penalty <- 1e6
 	leader <- vector(mode="numeric",length=dim(cluster_units)[2])
 	x <- 1/cluster_units
 	for (i in 1:dim(cluster_units)[2]){
@@ -315,12 +318,12 @@ d6 <- function(unit, centers,penalty=1e6){
 	return(list(error=error,clu=clu))
 }
 
-d6.cleader <- function(cluster_units){
+d6.cleader <- function(cluster_units,penalty=1e6){
 	#
 	# compute new leader for a cluster of units
 	# return leader
 	#
-	penalty <- 1e6
+	#penalty <- 1e6
 	leader <- vector(mode="numeric",length=dim(cluster_units)[2])
 	x <- 1/cluster_units
 	for (i in 1:dim(cluster_units)[2]){
@@ -356,12 +359,12 @@ d7 <- function(unit, centers,penalty=1e6){
 	return(list(error=error,clu=clu))
 }
 
-d7.cleader <- function(cluster_units){
+d7.cleader <- function(cluster_units,penalty=1e6){
 	#
 	# compute new leader for a cluster of units
 	# return leader
 	#
-	penalty <- 1e6
+	#penalty <- 1e6
 	leader <- vector(mode="numeric",length=dim(cluster_units)[2])
 	x <- 1/cluster_units
 	for (i in 1:dim(cluster_units)[2]){

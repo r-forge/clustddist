@@ -1,7 +1,7 @@
 Package: clustDDist
 Type: Package
 Title: Clustering Discrete Distributions
-Version: 1.0
+Version: 1.1
 Date: 2009-02-25
 Author: Natasa Kejzar, Vladimir Batagelj, Simona Korenjak-Cerne
 Maintainer: Natasa Kejzar <natasa.kejzar@fdv.uni-lj.si>

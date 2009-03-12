@@ -23,15 +23,15 @@ Internal Functions in the clustDDist package}
 compute.clusters(x, centers, err.measure, penalty = 1e+06)
 compute.D(i, j, leader, err.measure, size, sum, harmonic, penalty, ...)
 compute.hleader(i, j, leader, err.measure, size, sum, harmonic, penalty, ...)
-compute.leaders(x, k, curr_clusters, err.measure)
-d1.cleader(cluster_units)
+compute.leaders(x, k, curr_clusters, err.measure, penalty = 1e+06)
+d1.cleader(cluster_units, ...)
 d1.D(size1, size2, error, ...)
 d1.hleader(size1, size2, leader1, leader2, ...)
 d1(unit, centers, penalty = 1e+06)
 diss.matrix(leader, err.measure, size, sum, harmonic, penalty, ...)
 harmonic.sum(x, penalty = 1e+06)
-hclustering(x, err.measure, penalty = 1e+06, nleaders)
-leaders.algorithm(x, centers, err.measure = "d4", stabil = 1e-06, penalty = 1e+06)
+hclustering(x, err.measure, penalty = 1e+06, nleaders, fromLeaders)
+leaders.algorithm(x, centers, err.measure = "d4", stabil = 1e-06, penalty = 1e+06, echo = FALSE)
 sort.matrix.rows(m)
 update.diss(index_min, diss, leader, err.measure, size, sum, harmonic, penalty, ...)
 update.leader(mini, maxi, leader, err.measure, size, sum, harmonic, penalty)
@@ -60,6 +60,7 @@ update.vector(mini, maxi, vec)
   \item{error}{error among two clusters (computed acc. to error function)}
   \item{unit}{vector - a unit}
   \item{nleaders}{How many leaders should be saved (\code{NULL} or between 1 and n (number of units)). Note: leaders cannot be always computed after the whole procedure.}
+  \item{fromLeaders}{NULL or list that one gets from function \code{from.Leaders} in order to take size and units from leaders method into consideration.}
   \item{stabil}{Stability parameter - used in order to achieve convergence if too many clustering iterations.}
   \item{m}{numeric matrix to be sorted}
   \item{index_min}{vector of 2 indices - two cluster numbers to be merged}
@@ -68,6 +69,7 @@ update.vector(mini, maxi, vec)
   \item{maxi}{highest cluster number to be merged}
   \item{mat}{numeric matrix}
   \item{vec}{numeric vector}
+  \item{echo}{if TRUE function prints error of each iteration}
   \item{\ldots}{other possible parameters}
 }
 \details{
