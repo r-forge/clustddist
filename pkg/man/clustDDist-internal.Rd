@@ -43,7 +43,7 @@ update.vector(mini, maxi, vec)
   \item{x}{Dataframe or matrix of units (in rows). Rows can represent probabilities or frequencies.}
   \item{centers}{matrix of current leaders}
   \item{err.measure}{String for error function that will be used to calculate the error between current leader and a unit. Possibilities are from d1 to d7 (see reference).}
-  \item{penalty}{Parameter to specify how should division with zero be treated.}
+  \item{penalty}{Parameter to specify how should division by zero be treated.}
   \item{i}{i-th cluster}
   \item{j}{j-th cluster}
   \item{leader}{current leader matrix}
@@ -60,7 +60,7 @@ update.vector(mini, maxi, vec)
   \item{error}{error among two clusters (computed acc. to error function)}
   \item{unit}{vector - a unit}
   \item{nleaders}{How many leaders should be saved (\code{NULL} or between 1 and n (number of units)). Note: leaders cannot be always computed after the whole procedure.}
-  \item{fromLeaders}{NULL or list that one gets from function \code{from.Leaders} in order to take size and units from leaders method into consideration.}
+  \item{fromLeaders}{\code{NULL} or list that one gets from function \code{from.Leaders} in order to take size and units from leaders method into consideration.}
   \item{stabil}{Stability parameter - used in order to achieve convergence if too many clustering iterations.}
   \item{m}{numeric matrix to be sorted}
   \item{index_min}{vector of 2 indices - two cluster numbers to be merged}
@@ -69,7 +69,7 @@ update.vector(mini, maxi, vec)
   \item{maxi}{highest cluster number to be merged}
   \item{mat}{numeric matrix}
   \item{vec}{numeric vector}
-  \item{echo}{if TRUE function prints error of each iteration}
+  \item{echo}{if \code{TRUE} function prints error of each iteration}
   \item{\ldots}{other possible parameters}
 }
 \details{

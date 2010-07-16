@@ -3,9 +3,9 @@
 \alias{clustDDist}
 \docType{package}
 \title{
-Clustering Discrete Distributions}
+Clustering (Discrete) Distributions}
 \description{
-Implements functions for clustering units that are described as discrete distributions.  
+Implements functions for clustering units that are described with distributions.  
 There are two methods that are implemented: adapted leaders method and adapted hierarchical clustering method. }
 \details{
 \tabular{ll}{

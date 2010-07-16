@@ -15,7 +15,7 @@ leaders(x, centers, err.measure = "d4", as.probs = FALSE, iter.max = 10, stabil 
   \item{iter.max}{Maximal number of iterations of the algorithm (because leaders algorithm does local optimization). If centers represents a matrix, the argument is ignored.}
   \item{stabil}{Stability parameter - used in order to achieve convergence if too many clustering iterations.}
   \item{penalty}{Parameter to specify how should division with zero be treated.}
-  \item{echo}{if TRUE function prints error of each iteration}
+  \item{echo}{if \code{TRUE} function prints error of each iteration}
 
 }
 \details{
