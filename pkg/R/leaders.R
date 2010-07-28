@@ -1,12 +1,13 @@
 # setwd("Users/natasa/projekti/R_package/paket/")
 
 leaders <- function (x, centers, err.measure = "d4", as.probs = FALSE,
-					iter.max = 10, stabil=1e-6, penalty=1e6,echo=FALSE){
+					iter.max = 10, method = "rnd_cls", stabil=1e-6, penalty=1e6,echo=FALSE){
 	#
 	# basic function, compute clusters
 	# data: x, number of clusters (or centers already): centers, error measure: err.measure
 	# if x is probabilities: as.probs, 
 	# number of iterations for method: iter.max
+        # method: for determining centers (units, rnd_cls)
 	# (only considered if centers means "number of centers)
         # echo: whether iterations are written
 	#
@@ -50,9 +51,8 @@ leaders <- function (x, centers, err.measure = "d4", as.probs = FALSE,
 	for (i in 1:iter.max){
 		if (iter){
 		    # compute initial "leaders"
-        	ux2 <- unique(x2)
-        	ur <- nrow(ux2)
-        	centers <- ux2[sample(1:ur, k), , drop = FALSE]
+                    centers <- compute.centers(x2, k, method=method,
+                                   err.measure=err.measure, penalty=penalty)
 		}
         # compute clustering
         curr_res <- leaders.algorithm(x2, centers, err.measure=err.measure,
@@ -87,6 +87,9 @@ leaders.algorithm <- function(x, centers, err.measure="d4",stabil=1e-6,
 		# compute new leaders
 		leaders <- compute.leaders(x,k,curr_result$clu_vector,err.measure,penalty)
 		leaders <- sort.matrix.rows(leaders)
+                if (is.na(max(centers - leaders))){
+                  stop("consider less centers! (not all clusters have units)")
+                }
 		# compute clustering function and check if leaders stabilized
 		if (max(centers - leaders) < stabil)
 			stabilize = TRUE

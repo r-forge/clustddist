@@ -54,7 +54,7 @@ hclustering <- function(x,err.measure,penalty=1e6,nleaders,fromLeaders){
 	}
 	# compute dissimilarity matrix
 	diss <- diss.matrix(leader,err.measure,size,sum,harmonic,penalty)
-	# (get lower triangle of dissimilarities)
+	# (get upper right triangle of dissimilarities)
 	saved_leaders <- NULL
 	
 	for (i in 1:(n-1)){
@@ -65,7 +65,7 @@ hclustering <- function(x,err.measure,penalty=1e6,nleaders,fromLeaders){
 		index_min <- which(diss == min_dist,arr.ind = TRUE)
 		mini <- min(index_min[1,])
 		maxi <- max(index_min[1,])
-		# take first one that comes (*** according to columns!)
+		# take first one that comes (*** according to rows!)
 		# UPDATE MERGE - with new cluster numbers!
 		merge[i,] <- c(cluster_number[mini],cluster_number[maxi])
 		cluster_number[mini] <- i
@@ -85,6 +85,7 @@ hclustering <- function(x,err.measure,penalty=1e6,nleaders,fromLeaders){
 	rez <- list(merge=merge,height=height,saved_leaders=saved_leaders)
     return(rez)
 }
+
 
 compute.plot.order <- function(merge,n){
 	#
@@ -189,19 +190,10 @@ compute.hleader <- function(i,j,leader,err.measure,size,sum,harmonic,penalty,...
 	#
 	# subroutine that helps computing the one leader according to 
 	# err.measure and i and j clusters
-	#	
-	if (err.measure == "d1")
-		temp_leader <- d1.hleader(size[i],size[j],leader[i,],leader[j,])
-	if (err.measure == "d3")
-		temp_leader <- d3.hleader(leader[i,],leader[j,],sum[i,],sum[j,])
-	if (err.measure == "d4")
-		temp_leader <- d4.hleader(size[i],size[j],leader[i,],leader[j,])
-	if (err.measure == "d5")
-		temp_leader <- d5.hleader(leader[i,],leader[j,],harmonic[i,],harmonic[j,],penalty)
-	if (err.measure == "d6")
-		temp_leader <- d6.hleader(size[i],size[j],harmonic[i,],harmonic[j,])
-	if (err.measure == "d7")
-		temp_leader <- d7.hleader(leader[i,],leader[j,],sum[i,],sum[j,],penalty)
+	#
+        temp_leader <- eval(call(paste(err.measure,"hleader",sep="."),leader[i,],leader[j,],
+                                 size[i],size[j],harmonic[i,],harmonic[j,],
+                                 sum[i,],sum[j,],penalty))
 	return(temp_leader)
 }
 
@@ -217,33 +209,26 @@ compute.D <- function(i,j,leader,err.measure,size,sum,harmonic,penalty,...){
 	}else{
 	    # computation depends on error measure
 	    # compute leader (before computing d[i,j])
-	    temp_leader <- compute.hleader(i,j,leader,err.measure,size,sum,harmonic,penalty,...)
-		error_u <- eval(call(err.measure,leader[i,],t(as.matrix(temp_leader))))
-		error_u <- error_u$error
-		error_v <- eval(call(err.measure,leader[j,],t(as.matrix(temp_leader))))
-		error_v <- error_v$error
- 		if (err.measure == "d3")
-			d <- d3.D(error_u,error_v,leader[i,],leader[j,],sum[i,],sum[j,],penalty)
-		if (err.measure == "d4")
-			d <- d4.D(size[i],size[j],error_u,error_v)
-		if (err.measure == "d5")
-			d <- d5.D(error_u,error_v,leader[i,],leader[j,],harmonic[i,],harmonic[j,])
-		if (err.measure == "d6")
-			d <- d6.D(size[i],size[j],error_u,error_v)
-		if (err.measure == "d7")
-			d <- d7.D(error_u,error_v,leader[i,],leader[j,],sum[i,],sum[j,],penalty)
+	    new_leader <- compute.hleader(i,j,leader,err.measure,size,sum,harmonic,penalty,...)
+	    error_u <- eval(call(err.measure,leader[i,],t(as.matrix(new_leader))))
+	    error_u <- error_u$error
+	    error_v <- eval(call(err.measure,leader[j,],t(as.matrix(new_leader))))
+	    error_v <- error_v$error
+            d <- eval(call(paste(err.measure,".D",sep=""),size[i],size[j],error_u,error_v,
+                               leader[i,],leader[j,],sum[i,],sum[j,],harmonic[i,],harmonic[j,],penalty))
 	}
 	return(d)
 }
 
 # new LEADER when two clusters merged
 
-d1.hleader <- function(size1,size2,leader1,leader2,...){
+d1.hleader <- function(leader1,leader2,size1,size2,...){
 	leader <- (size1*leader1 + size2*leader2)/(size1+size2)
 	return(leader)
 }
 
-d3.hleader <- function(leader1,leader2,sum1,sum2,...){
+d3.hleader <- function(leader1,leader2,size1=NULL,size2=NULL,
+                       harmonic1=NULL,harmonic2=NULL,sum1,sum2,...){
 	if (sum(sum1+sum2) == 0){
 		leader <- rep(0,length(leader1))	
 	}else{
@@ -253,12 +238,13 @@ d3.hleader <- function(leader1,leader2,sum1,sum2,...){
 	return(leader)
 }
 
-d4.hleader <- function(size1,size2,leader1,leader2,...){
+d4.hleader <- function(leader1,leader2,size1,size2,...){
 	leader <- sqrt((size1*(leader1)^2 + size2*(leader2)^2)/(size1+size2))
 	return(leader)
 }
 
-d5.hleader <- function(leader1,leader2,harmonic1,harmonic2,penalty=1e6,...){
+d5.hleader <- function(leader1,leader2,size1=NULL,size2=NULL,harmonic1,harmonic2,
+                       sum1=NULL,sum2=NULL,penalty=1e6,...){
 	temp1 <- harmonic1/leader1
 	temp1[which(is.infinite(temp1))] <- penalty
 	temp2 <- harmonic2/leader2
@@ -267,13 +253,15 @@ d5.hleader <- function(leader1,leader2,harmonic1,harmonic2,penalty=1e6,...){
 	return(leader)
 }
 
-d6.hleader <- function(size1,size2,harmonic1,harmonic2,...){
+d6.hleader <- function(leader1=NULL,leader2=NULL,size1,size2,
+                       harmonic1,harmonic2,sum1=NULL,sum2=NULL,...){
 	leader <- (size1+size2)/(harmonic1+harmonic2)
 	return(leader)
 }
 
 # penalty
-d7.hleader <- function(leader1,leader2,sum1,sum2,penalty=1e6,...){
+d7.hleader <- function(leader1,leader2,size1=NULL,size2=NULL,
+                       harmonic1=NULL,harmonic2=NULL,sum1,sum2,penalty=1e6,...){
 	if (sum(sum1+sum2) == 0){
 		leader <- rep(0,length(leader1))
 	}else{
@@ -294,7 +282,8 @@ d1.D <- function(size1,size2,error,...){
 	return(size1*size2/(size1+size2)*error)
 }
 
-d3.D <- function(error1,error2,leader1,leader2,sum1,sum2,penalty=1e6,...){
+d3.D <- function(size1=NULL,size2=NULL,error1,error2,leader1,leader2,
+                 sum1,sum2,harmonic1=NULL,harmonic2=NULL,penalty=1e6,...){
 	temp1 <- sum1/leader1*error1
 	temp1[which(is.infinite(temp1))] <- penalty
 	temp1[which(is.nan(temp1))] <- 0
@@ -308,7 +297,8 @@ d4.D <- function(size1,size2,error1,error2,...){
 	return(size1*error1 + size2*error2)
 }
 
-d5.D <- function(error1,error2,leader1,leader2,harmonic1,harmonic2,...){
+d5.D <- function(size1=NULL,size2=NULL,error1,error2,leader1,leader2,
+                 sum1=NULL,sum2=NULL,harmonic1,harmonic2,...){
 	return(sum(harmonic1*leader1*error1 + harmonic2*leader2*error2))
 }
 
@@ -316,8 +306,9 @@ d6.D <- function(size1,size2,error1,error2,...){
 	return(d4.D(size1,size2,error1,error2,...))
 }
 
-d7.D <- function(error1,error2,leader1,leader2,sum1,sum2,penalty=1e6,...){
-	return(d3.D(error1,error2,leader1,leader2,sum1,sum2,penalty,...))
+d7.D <- function(size1=NULL,size2=NULL,error1,error2,leader1,leader2,sum1,sum2,
+                 harmonic1=NULL,harmonic2=NULL,penalty=1e6,...){
+	return(d3.D(error1=error1,error2=error2,leader1=leader1,leader2=leader2,sum1=sum1,sum2=sum2,penalty=penalty,...))
 }
 
 harmonic.sum <- function(x,penalty=1e6){

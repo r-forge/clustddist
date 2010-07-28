@@ -5,7 +5,7 @@
 Compute clustering with adapted leaders method, adapted stands for different error functions that are computed between units and current leaders
 }
 \usage{
-leaders(x, centers, err.measure = "d4", as.probs = FALSE, iter.max = 10, stabil = 1e-06, penalty = 1e+06, echo = FALSE)
+leaders(x, centers, err.measure = "d4", as.probs = FALSE, iter.max = 10, method = "rnd_cls", stabil = 1e-06, penalty = 1e+06, echo = FALSE)
 }
 \arguments{
   \item{x}{Dataframe or matrix of units (in rows). Rows can represent probabilities or frequencies.}
@@ -13,9 +13,10 @@ leaders(x, centers, err.measure = "d4", as.probs = FALSE, iter.max = 10, stabil 
   \item{err.measure}{String for error function that will be used to calculate the error between current leader and a unit. Possibilities are from d1 to d7 (see reference).}
   \item{as.probs}{TRUE if rows represent probabilities and FALSE otherwise.}
   \item{iter.max}{Maximal number of iterations of the algorithm (because leaders algorithm does local optimization). If centers represents a matrix, the argument is ignored.}
+  \item{method}{how to compute initial clusters: \code{rnd_cls} computes random clusters for each unit and gets their leaders, \code{units} gets leaders from units}
   \item{stabil}{Stability parameter - used in order to achieve convergence if too many clustering iterations.}
   \item{penalty}{Parameter to specify how should division with zero be treated.}
-  \item{echo}{if \code{TRUE} function prints error of each iteration}
+  \item{echo}{if TRUE function prints error of each iteration}
 
 }
 \details{
