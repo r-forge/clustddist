@@ -270,7 +270,7 @@ d5 <- function(unit, centers,penalty=1e6){
 		# solving problems of zero values (unit or centers component)
 		# both 0 -> NaN becomes 0
 		temp[which(is.nan(temp))] <- 0
-		# centers 0 -> turn to penalty (large number)
+		# units 0 -> turn to penalty (large number)
 		temp[which(is.infinite(temp))] <- penalty
 		possible_d[i] <- sum(temp) 
 	}
@@ -290,11 +290,11 @@ d5.cleader <- function(cluster_units,penalty=1e6){
 	for (i in 1:dim(cluster_units)[2]){
 		# compute every column (leader variable) separately
 		infinite <- which(is.infinite(x[,i]))
-		if (length(infinite) == dim(cluster_units)[1])
+		if (length(infinite) >=1) ## CHANGE (see d6.cleader)== dim(cluster_units)[1])
 			leader[i] <- 0	# all zeros
 		else{
-			x[infinite,i] <- penalty # zeros get penalty
-			x2 <- x[,i]^2 # KAKO UPORABITI PENALTY tukaj!?!
+			## x[infinite,i] <- penalty # zeros get penalty
+			x2 <- x[,i]^2
 			leader[i] <- sum(x[,i])/sum(x2)
 		}	
 	}
@@ -312,7 +312,7 @@ d6 <- function(unit, centers,penalty=1e6){
 		# solving problems of zero values (unit or centers component)
 		# both 0 -> NaN becomes 0
 		temp[which(is.nan(temp))] <- 0
-		# centers 0 -> turn to penalty (large number)
+		# units 0 -> turn to penalty (large number)
 		temp[which(is.infinite(temp))] <- penalty
 		possible_d[i] <- sum(temp) 
 	}
@@ -332,10 +332,10 @@ d6.cleader <- function(cluster_units,penalty=1e6){
 	for (i in 1:dim(cluster_units)[2]){
 		# compute every column (leader variable) separately
 		infinite <- which(is.infinite(x[,i]))
-		if (length(infinite) == dim(cluster_units)[1])
+		if (length(infinite) >= 1) ## CHANGE (the case of 1 unit zero, leader should be 0)== dim(cluster_units)[1])
 			leader[i] <- 0	# all zeros
 		else{
-			x[infinite,i] <- penalty # zeros get penalty
+			## x[infinite,i] <- penalty # zeros get penalty
 			leader[i] <- 1/mean(x[,i])
 		}	
 	}
@@ -353,7 +353,7 @@ d7 <- function(unit, centers,penalty=1e6){
 		# solving problems of zero values (unit or centers component)
 		# both 0 -> NaN becomes 0
 		temp[which(is.nan(temp))] <- 0
-		# centers 0 -> turn to penalty (large number)
+		# units 0 -> turn to penalty (large number)
 		temp[which(is.infinite(temp))] <- penalty
 		possible_d[i] <- sum(temp) 
 	}
@@ -373,10 +373,10 @@ d7.cleader <- function(cluster_units,penalty=1e6){
 	for (i in 1:dim(cluster_units)[2]){
 		# compute every column (leader variable) separately
 		infinite <- which(is.infinite(x[,i]))
-		if (length(infinite) == dim(cluster_units)[1])
+		if (length(infinite) >= 1) ## CHANGE (see d6.cleader) == dim(cluster_units)[1])
 			leader[i] <- 0	# all zeros
 		else{
-			x[infinite,i] <- penalty # zeros get penalty
+			## x[infinite,i] <- penalty # zeros get penalty
 			leader[i] <- sqrt(mean(cluster_units[,i])/mean(x[,i]))
 		}	
 	}
