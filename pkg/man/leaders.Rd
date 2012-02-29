@@ -35,6 +35,9 @@ Kejzar, N., Korenjak-Cerne, S. and Batagelj, V. (2009). Clustering discrete dist
 \seealso{\code{\link{hierarch}},\code{\link{kmeans}} from standard package, \code{\link{pam}} from package cluster}
 \examples{
 data(patents)
+## optional removal of rows with zeros if using error measure d7
+# ind <- rowSums(patents == 0) == 0
+# patents <- patents[ind, ]
 centers <- 3
 tt <- system.time(clust <- leaders(patents[1:40,], centers=centers))
 # prints out current iteration and current clustering error

@@ -22,6 +22,10 @@ leaders <- function (x, centers, err.measure = "d4", as.probs = FALSE,
 
     if (iter.max < 1) 
         stop("'iter.max' must be positive.")
+		
+	if (any(x == 0) && err.measure == "d7") 
+	    warning("x contains zeros, error measure d7 could produce empty clusters.")
+	
     if (missing(centers)) 
         stop("'centers' must be a number or a matrix.")
     if (length(centers) == 1) {
