@@ -10,7 +10,7 @@ hierarch(x, as.probs = TRUE, err.measure = "d4", penalty = 1e+06, nleaders = NUL
 \arguments{
   \item{x}{Dataframe or matrix of units (in rows). Rows can represent probabilities or frequencies.}
   \item{as.probs}{\code{TRUE} if rows represent probabilities and \code{FALSE} otherwise.}
-  \item{err.measure}{String for error function that will be used to calculate the error between current leader and a unit. Possibilities are from d1 to d7 (see reference).}
+  \item{err.measure}{String for error function that will be used to calculate the error between current leader and a unit. Possibilities are from d1 to d7 (but not d2, see reference).}
   \item{penalty}{Parameter to specify how should division by zero be treated.}
   \item{nleaders}{How many leaders should be saved (\code{NULL} or between 1 and n (number of units)). Note: leaders cannot be always computed after the whole procedure.}
   \item{fromLeaders}{\code{NULL} or list that one gets from function \code{from.Leaders} in order to take size and units from leaders method into consideration.}
