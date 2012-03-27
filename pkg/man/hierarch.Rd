@@ -26,8 +26,7 @@ The result is a list of
   ...
 }
 \references{
-Kejzar, N., Korenjak-Cerne, S. and Batagelj, V. (2009). Clustering discrete distributions: The case of patent citations (Submitted)
-}
+N. Kejzar, S. Korenjak-Cerne, and V. Batagelj: Clustering of distributions : A case of patent citations.J. classif., 2011, 28, doi: 10.1007/s00357-011-9084-x.}
 \author{Kejzar, N., Korenjak-Cerne, S. and Batagelj, V.}
 \seealso{\code{\link{leaders}} from package \code{clustDDist},\code{\link{hclust}} from standard package, \code{\link{agnes}} from package \code{cluster}}
 \examples{

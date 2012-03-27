@@ -27,11 +27,10 @@ Functions and data in the package:
 }
 \author{
 Kejzar, N., Korenjak-Cerne, S. and Batagelj, V.
-Maintainer: Natasa Kejzar <natasa.kejzar@fdv.uni-lj.si>
+Maintainer: Natasa Kejzar <natasa.kejzar@mf.uni-lj.si>
 }
 \references{
-Kejzar, N., Korenjak-Cerne, S. and Batagelj, V. (2009). Clustering discrete distributions: The case of patent citations (Submitted)
-}
+N. Kejzar, S. Korenjak-Cerne, and V. Batagelj: Clustering of distributions : A case of patent citations.J. classif., 2011, 28, doi: 10.1007/s00357-011-9084-x.}
 \keyword{ package }
 \seealso{
 \code{\link[pkg]{cluster}}

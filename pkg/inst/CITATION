@@ -1,11 +1,12 @@
 citHeader("To cite package ’clustDDist’ in publications use:") 
 desc <- packageDescription("clustDDist") 
-year <- 2010 
-citEntry(entry="unpublished", 
-	title = "Clustering discrete distributions: The case of patent citations", 
+year <- 2011 
+citEntry(entry="article", 
+	title = "Clustering discrete distributions: A case of patent citations", 
 	author = personList(as.person("Natasa Kejzar"), 
 		as.person("Simona Korenjak-Cerne"), 
 		as.person("Vladimir Batagelj")), 
 	year = year, 
-	note = "paper submitted"
+	journal = "Journal of classification",
+	number = 28
 )
